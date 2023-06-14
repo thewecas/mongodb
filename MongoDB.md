@@ -1,4 +1,4 @@
-> # MongoDB
+# MongoDB
 
 - General purpose document databse
 - stores data in document , similar to json file
@@ -663,7 +663,7 @@ different stages are
 
 ## Data modeling
 
-> Data that us accessed together should be stored together
+> Data that is accessed together should be stored together
 
 - ~ schema
 
@@ -822,6 +822,33 @@ db.collection.ceateIndex({<fieldName>:1, <fieldName>:1, ...})
 db.collection.ceateIndex({<fieldName of array>:1, <fieldName>:1, ...})
 ```
 
+## Atlas Search
+
+### Search Index
+
+- how a search should be performed
+
+```
+{
+  $search:{
+    "index":<index-name>,
+    <operator-name> | <collector-name>:{
+      <operator-specification> | <collector-specification>
+    },
+    "highlight":{
+      <highlight-option>
+    },
+    "count":{
+      <count-option>
+    },
+    "returnStoredSource": true | false
+  }
+}
+```
+
+- **Facets** : buckets that we group our search result into
+  - `$searchMeta` allows us to see the facets and how many results are in each buckets
+
 ## ACID Transactions
 
 - Group of db operations that will be completed as a unit or not at all
@@ -830,3 +857,6 @@ db.collection.ceateIndex({<fieldName of array>:1, <fieldName>:1, ...})
   - **C**onsistency : all changes made by operations are consistent with db constraints
   - **I**solation : multiple transactions can happen at sametime, without affecting the other
   - **D**urability : changes made by transactions will persist, no matter what
+
+db.sales.aggregate([{$search: {index:sample_supplies-sales-static',text: {query:London', path: { 'wildcard': '*' }} } },{$set: {score: { $meta: "searchScore" } }}])
+db.sales.aggregate([{$search: {index: sample_supplies-sales-static',text: {query: 'London',path: ['*']}}},{$set: {score: { $meta: 'searchScore' }}}]);

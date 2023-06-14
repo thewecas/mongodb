@@ -261,9 +261,8 @@ pre[data-line] .line-highlight[data-end]:after {
     </head>
     <body for="html-export">
       <div class="mume markdown-preview  ">
-      <blockquote>
-<h1>MongoDB</h1>
-</blockquote>
+      <h1 class="mume-header" id="mongodb">MongoDB</h1>
+
 <ul>
 <li>General purpose document databse</li>
 <li>stores data in document , similar to json file</li>
@@ -805,7 +804,7 @@ Example :</li>
 <h2 class="mume-header" id="data-modeling">Data modeling</h2>
 
 <blockquote>
-<p>Data that us accessed together should be stored together</p>
+<p>Data that is accessed together should be stored together</p>
 </blockquote>
 <ul>
 <li>~ schema</li>
@@ -985,7 +984,36 @@ account.updateOne({&lt;filter},{&lt;query&gt;})   // peroform in second document
 <li>only one field can points to an array</li>
 </ul>
 <pre data-role="codeBlock" data-info class="language-"><code>db.collection.ceateIndex({&lt;fieldName of array&gt;:1, &lt;fieldName&gt;:1, ...})
-</code></pre><h2 class="mume-header" id="acid-transactions">ACID Transactions</h2>
+</code></pre><h2 class="mume-header" id="atlas-search">Atlas Search</h2>
+
+<h3 class="mume-header" id="search-index">Search Index</h3>
+
+<ul>
+<li>how a search should be performed</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $search:{
+    &quot;index&quot;:&lt;index-name&gt;,
+    &lt;operator-name&gt; | &lt;collector-name&gt;:{
+      &lt;operator-specification&gt; | &lt;collector-specification&gt;
+    },
+    &quot;highlight&quot;:{
+      &lt;highlight-option&gt;
+    },
+    &quot;count&quot;:{
+      &lt;count-option&gt;
+    },
+    &quot;returnStoredSource&quot;: true | false
+  }
+}
+</code></pre><ul>
+<li><strong>Facets</strong> : buckets that we group our search result into
+<ul>
+<li><code>$searchMeta</code> allows us to see the facets and how many results are in each buckets</li>
+</ul>
+</li>
+</ul>
+<h2 class="mume-header" id="acid-transactions">ACID Transactions</h2>
 
 <ul>
 <li>Group of db operations that will be completed as a unit or not at all</li>
@@ -998,6 +1026,8 @@ account.updateOne({&lt;filter},{&lt;query&gt;})   // peroform in second document
 </ul>
 </li>
 </ul>
+<p>db.sales.aggregate([{<span style="color: #ee7f49; font-weight: 500;">ParseError: KaTeX parse error: Expected &apos;EOF&apos;, got &apos;}&apos; at position 97: &#x2026;ard&apos;: &apos;*&apos; }} } }&#x332;,{</span>set: {score: { <span style="color: #ee7f49; font-weight: 500;">ParseError: KaTeX parse error: Expected &apos;EOF&apos;, got &apos;}&apos; at position 21: &#x2026; &quot;searchScore&quot; }&#x332; }}])
+db.sales.&#x2026;</span>search: {index: sample_supplies-sales-static&apos;,text: {query: &apos;London&apos;,path: [&apos;*&apos;]}}},{<span style="color: #ee7f49; font-weight: 500;">ParseError: KaTeX parse error: Expected &apos;}&apos;, got &apos;EOF&apos; at end of input: set: {score: {</span>meta: &apos;searchScore&apos; }}}]);</p>
 
       </div>
       
