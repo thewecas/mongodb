@@ -1,4 +1,4 @@
-# MongoDB
+> # MongoDB
 
 - General purpose document databse
 - stores data in document , similar to json file
@@ -15,6 +15,7 @@
 ## Document
 
 - Data is stored in document
+- Max document size is 16MB
 - Displayed as JSON format, but stored in BSON(binary JSON) format
 - BSON provides additonal datatypes compared to JSON
 - Datatypes supported by BSON
@@ -69,10 +70,16 @@ Example :
   show dbs
   ```
 
+- list all collections
+
+  ```
+  show collections
+  ```
+
 - create and/or use database :
 
   ```
-  use databaseName
+  use <databaseName>
   ```
 
 - check mongodb status
@@ -385,24 +392,31 @@ new :true,
 ### Delete
 
 - Delete one document
+
   ```
   db.collection.delete(
     <filter>, {options}
   )
   ```
+
   Example :
+
   ```
   db.birds.deleteOne({
     _id: ObjectId("62cddf53c1d62bc45439bebf")
   })
   ```
+
 - Delete multiple documents
+
   ```
   db.collection.deleteMany(
     <filter>, {options}
   )
   ```
+
   Example :
+
   ```
   db.birds.deleteMany({
   sightings_count:{
@@ -486,3 +500,333 @@ db.collection.find(
     {couponUsed:true, storeLocation:"Denver"}
   )
   ```
+
+## Aggregation
+
+- **Aggregation** is analysis and summary of data
+- **Stage** is aggregate opertaion perofrmed on the data
+- **Aggregation pipeline** is series of od stages compelted one at a time, in order
+
+```
+db.collection.aggreagte([
+  { $stage_name: {<expression >} },
+  { $stage_name: {<expression >} }
+])
+```
+
+different stages are
+
+- `$match` : filters the data that matches criteria, similar to find
+
+  ```
+  {
+    $match:<Expression>
+  }
+  ```
+
+- `$group` : group document based on criteria
+
+  ```
+  {
+    $group:{
+      _id:<expression>,   //group key
+      <field>:{<accumalator>:<expression>}
+    }
+  }
+  ```
+
+  - `_id` specifies on which field the aggregate has to be performed
+  - `<field>` specifies the name given to aggregate result
+  - `<accumalator>` is a stage or aggregate function like `$count`, `$sum` etc
+    Example :
+
+  ```
+  db.zip.aggregate([
+    {
+      $match:{state:"CA"}
+    },
+    {
+      $group:{
+        _id:"$city,
+        totalZip:{$count:{}}
+      }
+    }
+  ])
+  ```
+
+- `$sort` : puts the doucument in a specified order
+
+  - `1` for ascending order, `-1` for descending order
+
+  ```
+  {
+    $sort: {
+        "field_name": 1
+    }
+  }
+  ```
+
+- `$limit` : limits the no. of documents
+
+  ```
+  {
+    $limit: 5
+  }
+  ```
+
+  Example :
+
+  ```
+  db.zips.aggregate([
+    {
+      $sort:{
+        pop:-1
+      }
+    }
+    {
+      $limit:3
+    }
+  ])
+  ```
+
+- `$project` : similar to `find()`, use as the last stage
+
+  ```
+  {
+    $project:{
+      <field>:<value>,
+      <field>:<value>,
+      .....
+    }
+  }
+  ```
+
+  Example :
+
+  ```
+  db.sightings.aggregate([
+  {
+    $project:{
+      date:1,
+      species_common:1,
+      _id:0
+    }
+  }])
+  ```
+
+  - `<value>` is set `1` to include, and `0` to exclude
+
+- `$set` : add or modify the fields in the pipeline
+
+  ```
+  {
+    $set:{
+      <field>:<value>,
+      <field>:<value>,
+      .....
+    }
+  }
+  ```
+
+  Example :
+
+  ```
+  db.birds.aggregate([
+    {
+      $set:{
+        class: 'bird'
+      }
+    }
+  ])
+  ```
+
+- `$count` : count no of documents in the pipeline
+
+  ```
+  {
+    $count:<field>
+  }
+  ```
+
+- `$out` : write documents that are returned by an aggregate pipeline into a new collection, it should be a last stage.replaces existing data, or creates new data
+
+  ```
+  {
+    $out:{
+      db: <db>,
+      coll:<newCollection>
+    }
+  }
+  ```
+
+  - id `db` is not specified then it replces the existing collection or db
+
+## Data modeling
+
+> Data that us accessed together should be stored together
+
+- ~ schema
+
+### types of relationships
+
+- **one-to-one**
+  ```
+  {
+    _id:...,
+    title:"RRR",
+    director:"SS Rajamouli"
+  }
+  ```
+- **one-to-many**
+  ```
+  {
+    _id:...,
+    title:"RRR",
+    cast:[
+      {actor:"Jr. NTR", character:"Bhim"}
+      {actor:"Ram Charan Tej", character:"Lead role"}
+    ],
+    ...
+  }
+  ```
+- **many-to-many**
+
+### Modeling Data Relationship
+
+- **Embedding** :
+  - store related data in the same document
+  - document inside document
+  - single query to retrieve data
+  - single operation to update / delete data
+  - data duplication
+  - large documents
+    Example
+  ```
+  {
+    _id:...,
+    title:"RRR",
+    cast:[
+      {actor:"Jr. NTR", character:"Bhim"}
+      {actor:"Ram Charan Tej", character:"Lead role"}
+    ],
+    ...
+  }
+  ```
+- **Referencing** :
+  - referencing to document in another collection
+  - mostly use `_id` field for referencing
+  - no duplication data
+  - smaller documents
+  - may need to query from multiple documents
+    Example
+  ```
+  {
+    _id:...,
+    title:"RRR",
+    cast:[
+      ObjectID("456fner63e343nc3e34),
+      ObjectID("456fner63rt24e43334),
+    ],
+    ...
+  }
+  ```
+
+### Multi document transaction
+
+- Its performing multiple operations on multiple document or collection wihtin a single transaction.
+- Session : used to group db operations that are related to each other & should run together
+- Max runtime for trnasaction is 1min
+
+- Steps in multi document transaction :
+
+  - create a session
+
+    ```
+    const session=db.getMongo().startSession()
+    ```
+
+  - start session
+
+    ```
+    session.startTransaction()
+    ```
+
+  - choose database & collection then create account varibale
+    ```
+    const account=session.getDatabase(<database>).getCollection(<collection>)
+    ```
+  - perform the db operations like `updateOne()`
+
+    ```
+    account.updateOne({<filter},{<query>})   // perform on first document
+    account.updateOne({<filter},{<query>})   // peroform in second document
+
+    ```
+
+  - commit transactions
+
+    ```
+    session.commitTransactions()
+    ```
+
+  - aborting transaction
+    ```
+    session.abortTransaction()
+    ```
+
+## Index
+
+- special data structure to store small portion of the data
+- ordered and easy to search efficiently
+- points to document identity
+- improves query performance
+- default index includes `_id`
+
+- `createIndex()` is used to create an index
+- `getIndexes()` is used to list the index
+- `explain()` is used to check whether index is being used or not
+- `hideIndex(<index>)` can be used to hide the index
+- `dropIndex()` is used to delete or drop the index
+- `dropIndexes()` is used to delete all index
+
+- Index types
+  - Single key : index on one field
+  - Compound key : index on more than one field
+  - Multi key : index on an array field
+
+### Single key index
+
+- index on sigle field
+- support queries & sort on single field
+- create an index
+
+```
+db.collection.createIndex({fieldName:1})
+```
+
+### Compound key index
+
+- index on multiple field
+- can be a multikey index if one of the key contains array field
+
+```
+db.collection.ceateIndex({<fieldName>:1, <fieldName>:1, ...})
+```
+
+### Multikey index
+
+- one of the index points to an array field
+- only one field can points to an array
+
+```
+db.collection.ceateIndex({<fieldName of array>:1, <fieldName>:1, ...})
+```
+
+## ACID Transactions
+
+- Group of db operations that will be completed as a unit or not at all
+- **ACID Properties**
+  - **A**tomicity : all operations either succeed or fail togehther
+  - **C**onsistency : all changes made by operations are consistent with db constraints
+  - **I**solation : multiple transactions can happen at sametime, without affecting the other
+  - **D**urability : changes made by transactions will persist, no matter what

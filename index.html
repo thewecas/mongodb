@@ -261,8 +261,9 @@ pre[data-line] .line-highlight[data-end]:after {
     </head>
     <body for="html-export">
       <div class="mume markdown-preview  ">
-      <h1 class="mume-header" id="mongodb">MongoDB</h1>
-
+      <blockquote>
+<h1>MongoDB</h1>
+</blockquote>
 <ul>
 <li>General purpose document databse</li>
 <li>stores data in document , similar to json file</li>
@@ -283,6 +284,7 @@ pre[data-line] .line-highlight[data-end]:after {
 
 <ul>
 <li>Data is stored in document</li>
+<li>Max document size is 16MB</li>
 <li>Displayed as JSON format, but stored in BSON(binary JSON) format</li>
 <li>BSON provides additonal datatypes compared to JSON</li>
 <li>Datatypes supported by BSON
@@ -329,8 +331,12 @@ pre[data-line] .line-highlight[data-end]:after {
 <pre data-role="codeBlock" data-info class="language-"><code>show dbs
 </code></pre></li>
 <li>
+<p>list all collections</p>
+<pre data-role="codeBlock" data-info class="language-"><code>show collections
+</code></pre></li>
+<li>
 <p>create and/or use database :</p>
-<pre data-role="codeBlock" data-info class="language-"><code>use databaseName
+<pre data-role="codeBlock" data-info class="language-"><code>use &lt;databaseName&gt;
 </code></pre></li>
 <li>
 <p>check mongodb status</p>
@@ -575,17 +581,23 @@ new :true,
 </code></pre><h3 class="mume-header" id="delete">Delete</h3>
 
 <ul>
-<li>Delete one document<pre data-role="codeBlock" data-info class="language-"><code>db.collection.delete(
+<li>
+<p>Delete one document</p>
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.delete(
   &lt;filter&gt;, {options}
 )
-</code></pre>Example :<pre data-role="codeBlock" data-info class="language-"><code>db.birds.deleteOne({
+</code></pre><p>Example :</p>
+<pre data-role="codeBlock" data-info class="language-"><code>db.birds.deleteOne({
   _id: ObjectId(&quot;62cddf53c1d62bc45439bebf&quot;)
 })
 </code></pre></li>
-<li>Delete multiple documents<pre data-role="codeBlock" data-info class="language-"><code>db.collection.deleteMany(
+<li>
+<p>Delete multiple documents</p>
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.deleteMany(
   &lt;filter&gt;, {options}
 )
-</code></pre>Example :<pre data-role="codeBlock" data-info class="language-"><code>db.birds.deleteMany({
+</code></pre><p>Example :</p>
+<pre data-role="codeBlock" data-info class="language-"><code>db.birds.deleteMany({
 sightings_count:{
   $lt : 10
 }
@@ -657,6 +669,334 @@ sightings_count:{
   {couponUsed:true, storeLocation:&quot;Denver&quot;}
 )
 </code></pre></li>
+</ul>
+<h2 class="mume-header" id="aggregation">Aggregation</h2>
+
+<ul>
+<li><strong>Aggregation</strong> is analysis and summary of data</li>
+<li><strong>Stage</strong> is aggregate opertaion perofrmed on the data</li>
+<li><strong>Aggregation pipeline</strong> is series of od stages compelted one at a time, in order</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.aggreagte([
+  { $stage_name: {&lt;expression &gt;} },
+  { $stage_name: {&lt;expression &gt;} }
+])
+</code></pre><p>different stages are</p>
+<ul>
+<li>
+<p><code>$match</code> : filters the data that matches criteria, similar to find</p>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $match:&lt;Expression&gt;
+}
+</code></pre></li>
+<li>
+<p><code>$group</code> : group document based on criteria</p>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $group:{
+    _id:&lt;expression&gt;,   //group key
+    &lt;field&gt;:{&lt;accumalator&gt;:&lt;expression&gt;}
+  }
+}
+</code></pre><ul>
+<li><code>_id</code> specifies on which field the aggregate has to be performed</li>
+<li><code>&lt;field&gt;</code> specifies the name given to aggregate result</li>
+<li><code>&lt;accumalator&gt;</code> is a stage or aggregate function like <code>$count</code>, <code>$sum</code> etc<br>
+Example :</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>db.zip.aggregate([
+  {
+    $match:{state:&quot;CA&quot;}
+  },
+  {
+    $group:{
+      _id:&quot;$city,
+      totalZip:{$count:{}}
+    }
+  }
+])
+</code></pre></li>
+<li>
+<p><code>$sort</code> : puts the doucument in a specified order</p>
+<ul>
+<li><code>1</code> for ascending order, <code>-1</code> for descending order</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $sort: {
+      &quot;field_name&quot;: 1
+  }
+}
+</code></pre></li>
+<li>
+<p><code>$limit</code> : limits the no. of documents</p>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $limit: 5
+}
+</code></pre><p>Example :</p>
+<pre data-role="codeBlock" data-info class="language-"><code>db.zips.aggregate([
+  {
+    $sort:{
+      pop:-1
+    }
+  }
+  {
+    $limit:3
+  }
+])
+</code></pre></li>
+<li>
+<p><code>$project</code> : similar to <code>find()</code>, use as the last stage</p>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $project:{
+    &lt;field&gt;:&lt;value&gt;,
+    &lt;field&gt;:&lt;value&gt;,
+    .....
+  }
+}
+</code></pre><p>Example :</p>
+<pre data-role="codeBlock" data-info class="language-"><code>db.sightings.aggregate([
+{
+  $project:{
+    date:1,
+    species_common:1,
+    _id:0
+  }
+}])
+</code></pre><ul>
+<li><code>&lt;value&gt;</code> is set <code>1</code> to include, and <code>0</code> to exclude</li>
+</ul>
+</li>
+<li>
+<p><code>$set</code> : add or modify the fields in the pipeline</p>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $set:{
+    &lt;field&gt;:&lt;value&gt;,
+    &lt;field&gt;:&lt;value&gt;,
+    .....
+  }
+}
+</code></pre><p>Example :</p>
+<pre data-role="codeBlock" data-info class="language-"><code>db.birds.aggregate([
+  {
+    $set:{
+      class: &apos;bird&apos;
+    }
+  }
+])
+</code></pre></li>
+<li>
+<p><code>$count</code> : count no of documents in the pipeline</p>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $count:&lt;field&gt;
+}
+</code></pre></li>
+<li>
+<p><code>$out</code> : write documents that are returned by an aggregate pipeline into a new collection, it should be a last stage.replaces existing data, or creates new data</p>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  $out:{
+    db: &lt;db&gt;,
+    coll:&lt;newCollection&gt;
+  }
+}
+</code></pre><ul>
+<li>id <code>db</code> is not specified then it replces the existing collection or db</li>
+</ul>
+</li>
+</ul>
+<h2 class="mume-header" id="data-modeling">Data modeling</h2>
+
+<blockquote>
+<p>Data that us accessed together should be stored together</p>
+</blockquote>
+<ul>
+<li>~ schema</li>
+</ul>
+<h3 class="mume-header" id="types-of-relationships">types of relationships</h3>
+
+<ul>
+<li><strong>one-to-one</strong><pre data-role="codeBlock" data-info class="language-"><code>{
+  _id:...,
+  title:&quot;RRR&quot;,
+  director:&quot;SS Rajamouli&quot;
+}
+</code></pre></li>
+<li><strong>one-to-many</strong><pre data-role="codeBlock" data-info class="language-"><code>{
+  _id:...,
+  title:&quot;RRR&quot;,
+  cast:[
+    {actor:&quot;Jr. NTR&quot;, character:&quot;Bhim&quot;}
+    {actor:&quot;Ram Charan Tej&quot;, character:&quot;Lead role&quot;}
+  ],
+  ...
+}
+</code></pre></li>
+<li><strong>many-to-many</strong></li>
+</ul>
+<h3 class="mume-header" id="modeling-data-relationship">Modeling Data Relationship</h3>
+
+<ul>
+<li><strong>Embedding</strong> :
+<ul>
+<li>store related data in the same document</li>
+<li>document inside document</li>
+<li>single query to retrieve data</li>
+<li>single operation to update / delete data</li>
+<li>data duplication</li>
+<li>large documents<br>
+Example</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  _id:...,
+  title:&quot;RRR&quot;,
+  cast:[
+    {actor:&quot;Jr. NTR&quot;, character:&quot;Bhim&quot;}
+    {actor:&quot;Ram Charan Tej&quot;, character:&quot;Lead role&quot;}
+  ],
+  ...
+}
+</code></pre></li>
+<li><strong>Referencing</strong> :
+<ul>
+<li>referencing to document in another collection</li>
+<li>mostly use <code>_id</code> field for referencing</li>
+<li>no duplication data</li>
+<li>smaller documents</li>
+<li>may need to query from multiple documents<br>
+Example</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>{
+  _id:...,
+  title:&quot;RRR&quot;,
+  cast:[
+    ObjectID(&quot;456fner63e343nc3e34),
+    ObjectID(&quot;456fner63rt24e43334),
+  ],
+  ...
+}
+</code></pre></li>
+</ul>
+<h3 class="mume-header" id="multi-document-transaction">Multi document transaction</h3>
+
+<ul>
+<li>
+<p>Its performing multiple operations on multiple document or collection wihtin a single transaction.</p>
+</li>
+<li>
+<p>Session : used to group db operations that are related to each other &amp; should run together</p>
+</li>
+<li>
+<p>Max runtime for trnasaction is 1min</p>
+</li>
+<li>
+<p>Steps in multi document transaction :</p>
+<ul>
+<li>
+<p>create a session</p>
+<pre data-role="codeBlock" data-info class="language-"><code>const session=db.getMongo().startSession()
+</code></pre></li>
+<li>
+<p>start session</p>
+<pre data-role="codeBlock" data-info class="language-"><code>session.startTransaction()
+</code></pre></li>
+<li>
+<p>choose database &amp; collection then create account varibale</p>
+<pre data-role="codeBlock" data-info class="language-"><code>const account=session.getDatabase(&lt;database&gt;).getCollection(&lt;collection&gt;)
+</code></pre></li>
+<li>
+<p>perform the db operations like <code>updateOne()</code></p>
+<pre data-role="codeBlock" data-info class="language-"><code>account.updateOne({&lt;filter},{&lt;query&gt;})   // perform on first document
+account.updateOne({&lt;filter},{&lt;query&gt;})   // peroform in second document
+
+</code></pre></li>
+<li>
+<p>commit transactions</p>
+<pre data-role="codeBlock" data-info class="language-"><code>session.commitTransactions()
+</code></pre></li>
+<li>
+<p>aborting transaction</p>
+<pre data-role="codeBlock" data-info class="language-"><code>session.abortTransaction()
+</code></pre></li>
+</ul>
+</li>
+</ul>
+<h2 class="mume-header" id="index">Index</h2>
+
+<ul>
+<li>
+<p>special data structure to store small portion of the data</p>
+</li>
+<li>
+<p>ordered and easy to search efficiently</p>
+</li>
+<li>
+<p>points to document identity</p>
+</li>
+<li>
+<p>improves query performance</p>
+</li>
+<li>
+<p>default index includes <code>_id</code></p>
+</li>
+<li>
+<p><code>createIndex()</code> is used to create an index</p>
+</li>
+<li>
+<p><code>getIndexes()</code> is used to list the index</p>
+</li>
+<li>
+<p><code>explain()</code> is used to check whether index is being used or not</p>
+</li>
+<li>
+<p><code>hideIndex(&lt;index&gt;)</code> can be used to hide the index</p>
+</li>
+<li>
+<p><code>dropIndex()</code> is used to delete or drop the index</p>
+</li>
+<li>
+<p><code>dropIndexes()</code> is used to delete all index</p>
+</li>
+<li>
+<p>Index types</p>
+<ul>
+<li>Single key : index on one field</li>
+<li>Compound key : index on more than one field</li>
+<li>Multi key : index on an array field</li>
+</ul>
+</li>
+</ul>
+<h3 class="mume-header" id="single-key-index">Single key index</h3>
+
+<ul>
+<li>index on sigle field</li>
+<li>support queries &amp; sort on single field</li>
+<li>create an index</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.createIndex({fieldName:1})
+</code></pre><h3 class="mume-header" id="compound-key-index">Compound key index</h3>
+
+<ul>
+<li>index on multiple field</li>
+<li>can be a multikey index if one of the key contains array field</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.ceateIndex({&lt;fieldName&gt;:1, &lt;fieldName&gt;:1, ...})
+</code></pre><h3 class="mume-header" id="multikey-index">Multikey index</h3>
+
+<ul>
+<li>one of the index points to an array field</li>
+<li>only one field can points to an array</li>
+</ul>
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.ceateIndex({&lt;fieldName of array&gt;:1, &lt;fieldName&gt;:1, ...})
+</code></pre><h2 class="mume-header" id="acid-transactions">ACID Transactions</h2>
+
+<ul>
+<li>Group of db operations that will be completed as a unit or not at all</li>
+<li><strong>ACID Properties</strong>
+<ul>
+<li><strong>A</strong>tomicity : all operations either succeed or fail togehther</li>
+<li><strong>C</strong>onsistency : all changes made by operations are consistent with db constraints</li>
+<li><strong>I</strong>solation : multiple transactions can happen at sametime, without affecting the other</li>
+<li><strong>D</strong>urability : changes made by transactions will persist, no matter what</li>
+</ul>
+</li>
 </ul>
 
       </div>
