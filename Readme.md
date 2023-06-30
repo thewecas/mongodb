@@ -1,6 +1,6 @@
 # MongoDB
 
-- General purpose document databse
+- General purpose document database
 - stores data in document , similar to json file
 - used in E commerce, iot , gaming , mobile apps etc....
 - Advantages
@@ -10,14 +10,14 @@
   - speed of development'
 - Document is basic unit of data
 - Collection is grouping of document
-- Databse is cotainer of collection
+- Database is container of collection
 
 ## Document
 
 - Data is stored in document
 - Max document size is 16MB
 - Displayed as JSON format, but stored in BSON(binary JSON) format
-- BSON provides additonal datatypes compared to JSON
+- BSON provides additional datatypes compared to JSON
 - Datatypes supported by BSON
   - String
   - Array
@@ -58,7 +58,7 @@ Example :
 
 ## Commands
 
-- login to atlas accoung
+- login to atlas account
 
   ```
   atlas auth  login
@@ -212,7 +212,7 @@ db.sales.find(
 
 #### Querying Arrays
 
-- Find method will not only looks for scalar values, but it can also lookthrough arrays for matching values
+- Find method will not only looks for scalar values, but it can also look through arrays for matching values
 - `$elemMatch` will find all document that contains the sub document
 - kind of subquery in sql
 
@@ -266,9 +266,9 @@ db.sales.find(
   )
   ```
 
-  it has an implicit syntax : ` db.collection.find( {<expresiion>, <expresiion>} )` , here `,` acts as `$and`
+  it has an implicit syntax : ` db.collection.find( {<expression>, <expression>} )` , here `,` acts as `$and`
 
-- `$or` : returns the document that satisfies atleast one of the expression
+- `$or` : returns the document that satisfies at least one of the expression
 
   ```
   db.<collection>.find({
@@ -461,7 +461,7 @@ db.companies.find(
 
 ## Projection
 
-- selecting a subset of fileds or columns
+- selecting a subset of fields or columns
 
 ```
 db.collection.find(
@@ -504,11 +504,11 @@ db.collection.find(
 ## Aggregation
 
 - **Aggregation** is analysis and summary of data
-- **Stage** is aggregate opertaion perofrmed on the data
-- **Aggregation pipeline** is series of od stages compelted one at a time, in order
+- **Stage** is aggregate operation performed on the data
+- **Aggregation pipeline** is series of od stages completed one at a time, in order
 
 ```
-db.collection.aggreagte([
+db.collection.aggregate([
   { $stage_name: {<expression >} },
   { $stage_name: {<expression >} }
 ])
@@ -554,7 +554,7 @@ different stages are
   ])
   ```
 
-- `$sort` : puts the doucument in a specified order
+- `$sort` : puts the document in a specified order
 
   - `1` for ascending order, `-1` for descending order
 
@@ -659,7 +659,7 @@ different stages are
   }
   ```
 
-  - id `db` is not specified then it replces the existing collection or db
+  - id `db` is not specified then it replaces the existing collection or db
 
 ## Data modeling
 
@@ -733,9 +733,9 @@ different stages are
 
 ### Multi document transaction
 
-- Its performing multiple operations on multiple document or collection wihtin a single transaction.
+- Its performing multiple operations on multiple document or collection within a single transaction.
 - Session : used to group db operations that are related to each other & should run together
-- Max runtime for trnasaction is 1min
+- Max runtime for transaction is 1min
 
 - Steps in multi document transaction :
 
@@ -751,7 +751,7 @@ different stages are
     session.startTransaction()
     ```
 
-  - choose database & collection then create account varibale
+  - choose database & collection then create account variable
     ```
     const account=session.getDatabase(<database>).getCollection(<collection>)
     ```
@@ -759,7 +759,7 @@ different stages are
 
     ```
     account.updateOne({<filter},{<query>})   // perform on first document
-    account.updateOne({<filter},{<query>})   // peroform in second document
+    account.updateOne({<filter},{<query>})   // perform in second document
 
     ```
 
@@ -796,7 +796,7 @@ different stages are
 
 ### Single key index
 
-- index on sigle field
+- index on single field
 - support queries & sort on single field
 - create an index
 
@@ -810,7 +810,7 @@ db.collection.createIndex({fieldName:1})
 - can be a multikey index if one of the key contains array field
 
 ```
-db.collection.ceateIndex({<fieldName>:1, <fieldName>:1, ...})
+db.collection.createIndex({<fieldName>:1, <fieldName>:1, ...})
 ```
 
 ### Multikey index
@@ -819,7 +819,7 @@ db.collection.ceateIndex({<fieldName>:1, <fieldName>:1, ...})
 - only one field can points to an array
 
 ```
-db.collection.ceateIndex({<fieldName of array>:1, <fieldName>:1, ...})
+db.collection.createIndex({<fieldName of array>:1, <fieldName>:1, ...})
 ```
 
 ## Atlas Search
@@ -853,10 +853,7 @@ db.collection.ceateIndex({<fieldName of array>:1, <fieldName>:1, ...})
 
 - Group of db operations that will be completed as a unit or not at all
 - **ACID Properties**
-  - **A**tomicity : all operations either succeed or fail togehther
+  - **A**tomicity : all operations either succeed or fail together
   - **C**onsistency : all changes made by operations are consistent with db constraints
-  - **I**solation : multiple transactions can happen at sametime, without affecting the other
+  - **I**solation : multiple transactions can happen at same time, without affecting the other
   - **D**urability : changes made by transactions will persist, no matter what
-
-db.sales.aggregate([{$search: {index:sample_supplies-sales-static',text: {query:London', path: { 'wildcard': '*' }} } },{$set: {score: { $meta: "searchScore" } }}])
-db.sales.aggregate([{$search: {index: sample_supplies-sales-static',text: {query: 'London',path: ['*']}}},{$set: {score: { $meta: 'searchScore' }}}]);
