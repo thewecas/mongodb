@@ -264,7 +264,7 @@ pre[data-line] .line-highlight[data-end]:after {
       <h1 class="mume-header" id="mongodb">MongoDB</h1>
 
 <ul>
-<li>General purpose document databse</li>
+<li>General purpose document database</li>
 <li>stores data in document , similar to json file</li>
 <li>used in E commerce, iot , gaming , mobile apps etc....</li>
 <li>Advantages
@@ -277,7 +277,7 @@ pre[data-line] .line-highlight[data-end]:after {
 </li>
 <li>Document is basic unit of data</li>
 <li>Collection is grouping of document</li>
-<li>Databse is cotainer of collection</li>
+<li>Database is container of collection</li>
 </ul>
 <h2 class="mume-header" id="document">Document</h2>
 
@@ -285,7 +285,7 @@ pre[data-line] .line-highlight[data-end]:after {
 <li>Data is stored in document</li>
 <li>Max document size is 16MB</li>
 <li>Displayed as JSON format, but stored in BSON(binary JSON) format</li>
-<li>BSON provides additonal datatypes compared to JSON</li>
+<li>BSON provides additional datatypes compared to JSON</li>
 <li>Datatypes supported by BSON
 <ul>
 <li>String</li>
@@ -322,7 +322,7 @@ pre[data-line] .line-highlight[data-end]:after {
 
 <ul>
 <li>
-<p>login to atlas accoung</p>
+<p>login to atlas account</p>
 <pre data-role="codeBlock" data-info class="language-"><code>atlas auth  login
 </code></pre></li>
 <li>
@@ -437,7 +437,7 @@ pre[data-line] .line-highlight[data-end]:after {
 
 <ul>
 <li>
-<p>Find method will not only looks for scalar values, but it can also lookthrough arrays for matching values</p>
+<p>Find method will not only looks for scalar values, but it can also look through arrays for matching values</p>
 </li>
 <li>
 <p><code>$elemMatch</code> will find all document that contains the sub document</p>
@@ -483,10 +483,10 @@ pre[data-line] .line-highlight[data-end]:after {
     }
   ] }
 )
-</code></pre><p>it has an implicit syntax : <code>db.collection.find( {&lt;expresiion&gt;, &lt;expresiion&gt;} )</code> , here <code>,</code> acts as <code>$and</code></p>
+</code></pre><p>it has an implicit syntax : <code>db.collection.find( {&lt;expression&gt;, &lt;expression&gt;} )</code> , here <code>,</code> acts as <code>$and</code></p>
 </li>
 <li>
-<p><code>$or</code> : returns the document that satisfies atleast one of the expression</p>
+<p><code>$or</code> : returns the document that satisfies at least one of the expression</p>
 <pre data-role="codeBlock" data-info class="language-"><code>db.&lt;collection&gt;.find({
   $or:[
     {&lt;expression&gt;},
@@ -635,7 +635,7 @@ sightings_count:{
 <h2 class="mume-header" id="projection">Projection</h2>
 
 <ul>
-<li>selecting a subset of fileds or columns</li>
+<li>selecting a subset of fields or columns</li>
 </ul>
 <pre data-role="codeBlock" data-info class="language-"><code>db.collection.find(
    &lt;query&gt;, &lt;projection&gt;
@@ -673,10 +673,10 @@ sightings_count:{
 
 <ul>
 <li><strong>Aggregation</strong> is analysis and summary of data</li>
-<li><strong>Stage</strong> is aggregate opertaion perofrmed on the data</li>
-<li><strong>Aggregation pipeline</strong> is series of od stages compelted one at a time, in order</li>
+<li><strong>Stage</strong> is aggregate operation performed on the data</li>
+<li><strong>Aggregation pipeline</strong> is series of od stages completed one at a time, in order</li>
 </ul>
-<pre data-role="codeBlock" data-info class="language-"><code>db.collection.aggreagte([
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.aggregate([
   { $stage_name: {&lt;expression &gt;} },
   { $stage_name: {&lt;expression &gt;} }
 ])
@@ -715,7 +715,7 @@ Example :</li>
 ])
 </code></pre></li>
 <li>
-<p><code>$sort</code> : puts the doucument in a specified order</p>
+<p><code>$sort</code> : puts the document in a specified order</p>
 <ul>
 <li><code>1</code> for ascending order, <code>-1</code> for descending order</li>
 </ul>
@@ -797,7 +797,7 @@ Example :</li>
   }
 }
 </code></pre><ul>
-<li>id <code>db</code> is not specified then it replces the existing collection or db</li>
+<li>id <code>db</code> is not specified then it replaces the existing collection or db</li>
 </ul>
 </li>
 </ul>
@@ -877,13 +877,13 @@ Example</li>
 
 <ul>
 <li>
-<p>Its performing multiple operations on multiple document or collection wihtin a single transaction.</p>
+<p>Its performing multiple operations on multiple document or collection within a single transaction.</p>
 </li>
 <li>
 <p>Session : used to group db operations that are related to each other &amp; should run together</p>
 </li>
 <li>
-<p>Max runtime for trnasaction is 1min</p>
+<p>Max runtime for transaction is 1min</p>
 </li>
 <li>
 <p>Steps in multi document transaction :</p>
@@ -897,13 +897,13 @@ Example</li>
 <pre data-role="codeBlock" data-info class="language-"><code>session.startTransaction()
 </code></pre></li>
 <li>
-<p>choose database &amp; collection then create account varibale</p>
+<p>choose database &amp; collection then create account variable</p>
 <pre data-role="codeBlock" data-info class="language-"><code>const account=session.getDatabase(&lt;database&gt;).getCollection(&lt;collection&gt;)
 </code></pre></li>
 <li>
 <p>perform the db operations like <code>updateOne()</code></p>
 <pre data-role="codeBlock" data-info class="language-"><code>account.updateOne({&lt;filter},{&lt;query&gt;})   // perform on first document
-account.updateOne({&lt;filter},{&lt;query&gt;})   // peroform in second document
+account.updateOne({&lt;filter},{&lt;query&gt;})   // perform in second document
 
 </code></pre></li>
 <li>
@@ -965,7 +965,7 @@ account.updateOne({&lt;filter},{&lt;query&gt;})   // peroform in second document
 <h3 class="mume-header" id="single-key-index">Single key index</h3>
 
 <ul>
-<li>index on sigle field</li>
+<li>index on single field</li>
 <li>support queries &amp; sort on single field</li>
 <li>create an index</li>
 </ul>
@@ -976,14 +976,14 @@ account.updateOne({&lt;filter},{&lt;query&gt;})   // peroform in second document
 <li>index on multiple field</li>
 <li>can be a multikey index if one of the key contains array field</li>
 </ul>
-<pre data-role="codeBlock" data-info class="language-"><code>db.collection.ceateIndex({&lt;fieldName&gt;:1, &lt;fieldName&gt;:1, ...})
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.createIndex({&lt;fieldName&gt;:1, &lt;fieldName&gt;:1, ...})
 </code></pre><h3 class="mume-header" id="multikey-index">Multikey index</h3>
 
 <ul>
 <li>one of the index points to an array field</li>
 <li>only one field can points to an array</li>
 </ul>
-<pre data-role="codeBlock" data-info class="language-"><code>db.collection.ceateIndex({&lt;fieldName of array&gt;:1, &lt;fieldName&gt;:1, ...})
+<pre data-role="codeBlock" data-info class="language-"><code>db.collection.createIndex({&lt;fieldName of array&gt;:1, &lt;fieldName&gt;:1, ...})
 </code></pre><h2 class="mume-header" id="atlas-search">Atlas Search</h2>
 
 <h3 class="mume-header" id="search-index">Search Index</h3>
@@ -1019,15 +1019,13 @@ account.updateOne({&lt;filter},{&lt;query&gt;})   // peroform in second document
 <li>Group of db operations that will be completed as a unit or not at all</li>
 <li><strong>ACID Properties</strong>
 <ul>
-<li><strong>A</strong>tomicity : all operations either succeed or fail togehther</li>
+<li><strong>A</strong>tomicity : all operations either succeed or fail together</li>
 <li><strong>C</strong>onsistency : all changes made by operations are consistent with db constraints</li>
-<li><strong>I</strong>solation : multiple transactions can happen at sametime, without affecting the other</li>
+<li><strong>I</strong>solation : multiple transactions can happen at same time, without affecting the other</li>
 <li><strong>D</strong>urability : changes made by transactions will persist, no matter what</li>
 </ul>
 </li>
 </ul>
-<p>db.sales.aggregate([{<span style="color: #ee7f49; font-weight: 500;">ParseError: KaTeX parse error: Expected &apos;EOF&apos;, got &apos;}&apos; at position 97: &#x2026;ard&apos;: &apos;*&apos; }} } }&#x332;,{</span>set: {score: { <span style="color: #ee7f49; font-weight: 500;">ParseError: KaTeX parse error: Expected &apos;EOF&apos;, got &apos;}&apos; at position 21: &#x2026; &quot;searchScore&quot; }&#x332; }}])
-db.sales.&#x2026;</span>search: {index: sample_supplies-sales-static&apos;,text: {query: &apos;London&apos;,path: [&apos;*&apos;]}}},{<span style="color: #ee7f49; font-weight: 500;">ParseError: KaTeX parse error: Expected &apos;}&apos;, got &apos;EOF&apos; at end of input: set: {score: {</span>meta: &apos;searchScore&apos; }}}]);</p>
 
       </div>
       
