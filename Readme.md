@@ -107,9 +107,9 @@ Example :
 - insert one document to the collection :
 
   ```
-  db.<collection>.insertOne
+  db.<collection>.insertOne(
     { key1: "value1", key2: "value2" }
-
+  )
   ```
 
   Example : `db.accounts.insertOne({name: "John Doe",age: 30,})`
